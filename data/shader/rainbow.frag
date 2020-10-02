@@ -1,7 +1,12 @@
-#version 330
+#version 300 es
+
+precision highp float;
+precision highp int;
+
+
+uniform int color_mode;
 uniform vec2 z_range;
 uniform int z_clipping;
-uniform int color_mode;
 
 in vec4 frag_color;
 flat in ivec4 frag_info;

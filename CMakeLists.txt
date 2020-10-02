@@ -1,30 +1,37 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
 project(interactive_slam)
 
-set (IS_VERSION_MAJOR 1)
-set (IS_VERSION_MINOR 0)
-set (IS_VERSION_REVISION 5)
+# set (IS_VERSION_MAJOR 1)
+# set (IS_VERSION_MINOR 0)
+# set (IS_VERSION_REVISION 5)
 
-execute_process (COMMAND git rev-parse --short HEAD WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR} OUTPUT_VARIABLE GIT_LAST_COMMIT_HASH OUTPUT_STRIP_TRAILING_WHITESPACE)
-execute_process (COMMAND git log -1 --format=%cd WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR} OUTPUT_VARIABLE GIT_LAST_COMMIT_DATE OUTPUT_STRIP_TRAILING_WHITESPACE)
+# execute_process (COMMAND git rev-parse --short HEAD WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR} OUTPUT_VARIABLE GIT_LAST_COMMIT_HASH OUTPUT_STRIP_TRAILING_WHITESPACE)
+# execute_process (COMMAND git log -1 --format=%cd WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR} OUTPUT_VARIABLE GIT_LAST_COMMIT_DATE OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-set (LAST_COMMIT_HASH \"${GIT_LAST_COMMIT_HASH}\")
-set (LAST_COMMIT_DATE \"${GIT_LAST_COMMIT_DATE}\")
+# set (LAST_COMMIT_HASH \"${GIT_LAST_COMMIT_HASH}\")
+# set (LAST_COMMIT_DATE \"${GIT_LAST_COMMIT_DATE}\")
 
-configure_file (
-  "${PROJECT_SOURCE_DIR}/include/hdl_graph_slam/version.h.in"
-  "${PROJECT_SOURCE_DIR}/include/hdl_graph_slam/version.h"
-)
+# configure_file (
+#   "${PROJECT_SOURCE_DIR}/include/hdl_graph_slam/version.h.in"
+#   "${PROJECT_SOURCE_DIR}/include/hdl_graph_slam/version.h"
+# )
 
 # add_definitions(-std=c++11)
 set(CMAKE_CXX_FLAGS "-std=c++11")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_LIST_DIR}/cmake")
+set(CMAKE_BUILD_TYPE "RELEASE")
 
-find_package(catkin REQUIRED COMPONENTS roscpp ndt_omp hdl_graph_slam roslib)
+
+find_package(catkin REQUIRED COMPONENTS 
+  hdl_graph_slam 
+  roscpp 
+  ndt_omp 
+  roslib
+)
 
 find_package(GLM REQUIRED)
 find_package(OpenGL REQUIRED)
-find_package(PCL REQUIRED)
+find_package(PCL 1.8 REQUIRED)
 
 find_package(Eigen3 REQUIRED)
 find_package(Boost REQUIRED filesystem program_options)
@@ -32,20 +39,28 @@ find_package(Boost REQUIRED filesystem program_options)
 find_package(G2O REQUIRED)
 include_directories(SYSTEM ${G2O_INCLUDE_DIR} ${G2O_INCLUDE_DIRS})
 link_directories(${G2O_LIBRARY_DIRS})
+# link_libraries(${G2O_LIBRARIES})
 
 ##################
-# catking config #
+# catkin config #
 ##################
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES interactive_map_correction
-#  CATKIN_DEPENDS other_catkin_pkg
+  INCLUDE_DIRS include
+  LIBRARIES interactive_map_correction
+#  CATKIN_DEPENDS hdl_graph_slam
 #  DEPENDS system_lib
 )
+
 
 ###########
 ## Build ##
 ###########
+
+include_directories(include ${catkin_INCLUDE_DIRS})
+
+message(STATUS "catkin_INCLUDE_DIRS:" ${catkin_INCLUDE_DIRS})
+message(STATUS "G2O_INCLUDE_DIRS:" ${G2O_INCLUDE_DIR})
+message(STATUS "Project dir:" ${PROJECT_SOURCE_DIR})
 
 include_directories(
   include
@@ -57,7 +72,9 @@ include_directories(
   ${Boost_INCLUDE_DIRS}
   ${EIGEN3_INCLUDE_DIRS}
   ${PCL_INCLUDE_DIRS}
+  ${G2O_INCLUDE_DIR}
   ${catkin_INCLUDE_DIRS}
+  ${PROJECT_SOURCE_DIR}/../hdl_graph_slam/include #Pretty sure this is not the prettiest way of fixing these issues
 )
 
 # imgui

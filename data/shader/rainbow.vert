@@ -1,4 +1,4 @@
-#version 330
+#version 300 es
 uniform float point_size;
 uniform float point_scale;
 uniform mat4 model_matrix;

@@ -1,4 +1,4 @@
-#version 330
+#version 300 es
 in vec3 vert_position;
 out vec2 texcoord;
 

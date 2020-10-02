@@ -65,7 +65,7 @@ public:
     if(task_name != this->task_name) {
       return false;
     }
-
+    
     bool terminated = false;
     if (ImGui::BeginPopupModal(modal_name.c_str(), nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoTitleBar)) {
       {

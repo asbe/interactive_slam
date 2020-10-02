@@ -55,6 +55,13 @@ public:
       close();
     }
 
+    //
+    if (!pfd::settings::available())
+    {
+        std::cout << "Portable File Dialogs are not available on this platform.\n";
+        return 1;
+    }
+
     // initialize the pose graph
     graph.reset(new InteractiveGraphView());
     graph->init_gl();
@@ -241,6 +248,7 @@ private:
     if(ImGui::BeginMenu("File")) {
       if(ImGui::BeginMenu("Open")) {
         if(ImGui::MenuItem("New map")) {
+          std::cout << "Load map clicked" << std::endl;
           open_map_dialog = true;
         }
         if(ImGui::MenuItem("Merge map")) {
@@ -376,6 +384,8 @@ private:
       return;
     }
     pfd::select_folder dialog("choose graph directory");
+
+      
     while(!dialog.ready()) {
       usleep(100);
     }
